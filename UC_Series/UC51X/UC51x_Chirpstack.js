@@ -2,14 +2,21 @@
  * Payload Decoder for Chirpstack and Milesight network server
  *
  * Copyright 2023 Milesight IoT
+ * Copyright 2023 Lamarr, Inc.
+ * 
+ * Merged CSv3 and CSv4, local meter.me fixes/changes
  *
  * @product UC51x v3
  */
-function Decode(fPort, bytes) {
-    return milesight(bytes);
+
+// v3 to v4 compatibility wrapper
+function decodeUplink(input) {
+	return {
+		data: Decode(input.fPort, input.bytes, input.variables)
+	};
 }
 
-function milesight(bytes) {
+function Decode(fPort, bytes) {
     var decoded = {};
 
     for (var i = 0; i < bytes.length; ) {
@@ -28,7 +35,7 @@ function milesight(bytes) {
         }
         // VALVE 2
         else if (channel_id === 0x05 && channel_type == 0x01) {
-            decoded.valve2 = bytes[i] === 0 ? "close" : "on";
+            decoded.valve2 = bytes[i] === 0 ? "off" : "on";
             i += 1;
         }
         // VALVE 1 Pulse
@@ -91,8 +98,9 @@ function milesight(bytes) {
  * bytes to number
  ********************************************/
 function readUInt32LE(bytes) {
-    var value = (bytes[3] << 24) + (bytes[2] << 16) + (bytes[1] << 8) + bytes[0];
-    return (value & 0xffffffff) >>> 0;
+    var value =
+        (bytes[3] << 24) + (bytes[2] << 16) + (bytes[1] << 8) + bytes[0];
+    return value & 0xffffffff;
 }
 
 function readInt32LE(bytes) {
