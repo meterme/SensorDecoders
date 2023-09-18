@@ -23,22 +23,22 @@ function milesight(bytes) {
         }
         // VALVE 1
         else if (channel_id === 0x03 && channel_type == 0x01) {
-            decoded.valve_1 = bytes[i] === 0 ? "off" : "on";
+            decoded.valve1 = bytes[i] === 0 ? "off" : "on";
             i += 1;
         }
         // VALVE 2
         else if (channel_id === 0x05 && channel_type == 0x01) {
-            decoded.valve_2 = bytes[i] === 0 ? "close" : "on";
+            decoded.valve2 = bytes[i] === 0 ? "close" : "on";
             i += 1;
         }
         // VALVE 1 Pulse
         else if (channel_id === 0x04 && channel_type === 0xc8) {
-            decoded.valve_1_pulse = readUInt32LE(bytes.slice(i, i + 4));
+            decoded.valve1_pulse = readUInt32LE(bytes.slice(i, i + 4));
             i += 4;
         }
         // VALVE 2 Pulse
         else if (channel_id === 0x06 && channel_type === 0xc8) {
-            decoded.valve_2_pulse = readUInt32LE(bytes.slice(i, i + 4));
+            decoded.valve2_pulse = readUInt32LE(bytes.slice(i, i + 4));
             i += 4;
         }
         // GPIO 1
